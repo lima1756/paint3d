@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <script type="module">
+    import * as THREE from "https://unpkg.com/three/build/three.module.js";
+    import { OrbitControls } from "https://unpkg.com/three/examples/jsm/controls/OrbitControls.js";
+    import Stats from "https://unpkg.com/three/examples/jsm/libs/stats.module.js";
+    import dat from "https://unpkg.com/three/examples/jsm/libs/dat.gui.module.js";
+
+    "use strict";
+
+    class Quad extends THREE.Mesh {
+      constructor() {
+        super()
+        let vertices = [-0.5, 0.5, 0,
+        -0.5, -0.5, 0,
+          0.5, -0.5, 0,
+          0.5, 0.5, 0]
+        let index = [0, 1, 2,
+          0, 2, 3]
+        this.geometry = new THREE.BufferGeometry();
+        this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+        this.geometry.setIndex(index);
+        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.name = "Quad"
+      }
+      setWireframe(val) {
+        this.material.wireframe = val
+      }
+    }
+
+    class Triangle extends THREE.Mesh {
+      constructor() {
+        super()
+        let vertices = [-0.5, 0.5, 0,
+        -0.5, -0.5, 0,
+          0.5, -0.5, 0]
+        let index = [0, 1, 2]
+        this.geometry = new THREE.BufferGeometry();
+        this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+        this.geometry.setIndex(index);
+        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.name = "Triangle"
+      }
+      setWireframe(val) {
+        this.material.wireframe = val
+      }
+    }
+
+    class Box extends THREE.Group {
+      constructor() {
+        super();
+        this.faces = [new Quad(), new Quad(), new Quad(), new Quad(), new Quad(), new Quad()]
+        this.faces[0].position.z = 0.5;
+        this.faces[1].position.z = -0.5;
+        this.faces[1].rotation.y = Math.PI
+        this.faces[2].rotation.y = Math.PI / 2
+        this.faces[2].position.x = 0.5
+        this.faces[3].rotation.y = Math.PI / 2 * 3
+        this.faces[3].position.x = -0.5
+        this.faces[4].rotation.x = Math.PI / 2 * 3
+        this.faces[4].position.y = 0.5
+        this.faces[5].rotation.x = Math.PI / 2
+        this.faces[5].position.y = -0.5
+        this.faces.forEach(face => { this.add(face) })
+        this.name = "Box"
+      }
+      setWireframe(val) {
+        this.faces.forEach(face => face.setWireframe(val))
+      }
+    }
+
+    class Pyramid extends THREE.Mesh {
+      constructor() {
+        super();
+        let vertices = [0.5, 0, 0.5,
+          -0.5, 0, 0.5,
+          -0.5, 0, -0.5,
+          0.5, 0, -0.5,
+          0, 1, 0,
+        ]
+        let index = [0, 1, 2,
+          0, 2, 3,
+          0, 3, 4,
+          0, 4, 1,
+          1, 4, 2,
+          2, 4, 3
+        ]
+        this.geometry = new THREE.BufferGeometry();
+        this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+        this.geometry.setIndex(index);
+        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.name = "Pyramid"
+      }
+      setWireframe(val) {
+        this.material.wireframe = val
+      }
+    }
+
+    class House extends THREE.Group {
+      constructor() {
+        super();
+        this.base = new Box();
+        this.roof = new Pyramid();
+        this.roof.position.y += 0.5
+        this.add(this.base)
+        this.add(this.roof)
+        this.name = "House"
+      }
+      setWireframe(val) {
+        this.base.setWireframe(val);
+        this.roof.setWireframe(val);
+      }
+    }
+
+    class Circle extends THREE.Mesh {
+      constructor(radius = 1, radialSegments = 8) {
+        super()
+        let vertices = [0, 0, 0]
+        let angle = 0;
+        while ((2 * Math.PI) / angle > 1.0000000001) {
+          let x = radius * Math.cos(angle)
+          let y = radius * Math.sin(angle)
+          vertices.push(x, y, 0)
+          angle += (2 * Math.PI) / radialSegments
+        }
+        let index = []
+        for (let i = 1; i < radialSegments; i++) {
+          index.push(0, i, i + 1)
+        }
+        index.push(0, radialSegments, 1)
+        this.geometry = new THREE.BufferGeometry();
+        this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+        this.geometry.setIndex(index);
+        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.name = "Circle"
+      }
+      setWireframe(val) {
+        this.material.wireframe = val
+      }
+    }
+
+    class Cylinder extends THREE.Mesh {
+      constructor(height = 1, radius = 1, radialSegments = 8) {
+        super()
+        let vertices = [0, -height / 2, 0]
+        let angle = 0;
+        let i = 1;
+        while ((2 * Math.PI) / angle > 1.0000000001) {
+          let x = radius * Math.cos(angle)
+          let y = radius * Math.sin(angle)
+          vertices.push(x, -height / 2, y)
+          angle += (2 * Math.PI) / radialSegments
+        }
+        angle = 0;
+        vertices.push(0, height / 2, 0)
+        i++
+        while ((2 * Math.PI) / angle > 1.0000000001) {
+          let x = radius * Math.cos(angle)
+          let y = radius * Math.sin(angle)
+          vertices.push(x, height / 2, y)
+          angle += (2 * Math.PI) / radialSegments
+        }
+        let index = []
+        for (let i = 1; i < radialSegments; i++) {
+          index.push(0, i, i + 1)
+        }
+        index.push(0, radialSegments, 1)
+        for (let i = radialSegments + 1; i <= 2 * radialSegments; i++) {
+          index.push(radialSegments + 1, i + 1, i)
+        }
+        index.push(radialSegments + 1, radialSegments + 2, radialSegments * 2 + 1)
+        for (let i = 1; i < radialSegments; i++) {
+          index.push(i, i + radialSegments + 1, i + radialSegments + 2)
+          index.push(i, i + radialSegments + 2, i + 1)
+        }
+        index.push(radialSegments, radialSegments * 2 + 1, radialSegments + 2)
+        index.push(radialSegments, radialSegments + 2, 1)
+        this.geometry = new THREE.BufferGeometry();
+        this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+        this.geometry.setIndex(index);
+        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.name = "Cylinder"
+      }
+      setWireframe(val) {
+        this.material.wireframe = val
+      }
+    }
+
+    class Cone extends THREE.Mesh {
+      constructor(height = 1, radius = 1, radialSegments = 8) {
+        super()
+        let vertices = [0, -height / 2, 0]
+        let angle = 0;
+        while ((2 * Math.PI) / angle > 1.0000000001) {
+          let x = radius * Math.cos(angle)
+          let y = radius * Math.sin(angle)
+          vertices.push(x, -height / 2, y)
+          angle += (2 * Math.PI) / radialSegments
+        }
+        vertices.push(0, height / 2, 0)
+        let index = []
+        for (let i = 1; i < radialSegments; i++) {
+          index.push(0, i, i + 1)
+          index.push(i, radialSegments + 1, i + 1)
+        }
+        index.push(0, radialSegments, 1)
+        index.push(radialSegments, radialSegments + 1, 1)
+        this.geometry = new THREE.BufferGeometry();
+        this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+        this.geometry.setIndex(index);
+        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.name = "Cone"
+      }
+      setWireframe(val) {
+        this.material.wireframe = val
+      }
+    }
+
+    class Pine extends THREE.Group {
+      constructor() {
+        super();
+        this.base = new Cylinder(.3, .1625);
+        this.top = new Cone(1, .5, 32);
+        this.top.position.y += .65
+        this.add(this.base)
+        this.add(this.top)
+        this.name = "Pine"
+      }
+      setWireframe(val) {
+        this.base.setWireframe(val);
+        this.top.setWireframe(val);
+      }
+    }
+
+    class Octahedron extends THREE.Mesh {
+      constructor(radius = 1) {
+        super()
+        let vertices = []
+        let step = Math.PI / 2;
+        for (let i = 0; i < 4; i++) {
+          let x = radius * Math.cos(step * i)
+          let y = radius * Math.sin(step * i)
+          vertices.push(x, 0, y)
+        }
+        vertices.push(0, radius, 0)
+        vertices.push(0, -radius, 0)
+        let index = []
+        for (let i = 0; i < 4; i++) {
+          index.push(4, (i + 1) % 4, i)
+          index.push(5, i, (i + 1) % 4)
+        }
+        this.geometry = new THREE.BufferGeometry();
+        this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+        this.geometry.setIndex(index);
+        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.name = "Octahedron"
+      }
+      setWireframe(val) {
+        this.material.wireframe = val
+      }
+    }
+
+    let renderer, scene, camera, cameraControls, stats;
+
+    function init() {
+      // RENDERER ENGINE
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setClearColor(new THREE.Color(1, 1, 1));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // SCENE
+      scene = new THREE.Scene();
+
+      // CAMERA
+      let fov = 60;
+      let aspect = window.innerWidth / window.innerHeight;
+      let near = 0.1;
+      let far = 100;
+      camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+      camera.position.set(0, 0, 3);
+      cameraControls = new OrbitControls(camera, renderer.domElement);
+
+      // SCENE GRAPH
+      let allMeshes = [new Octahedron()]
+      allMeshes.forEach(mesh => scene.add(mesh));
+
+      // Floor
+      const gridHelper = new THREE.GridHelper(10, 10);
+      scene.add(gridHelper);
+
+      // STATS
+      stats = new Stats();
+      stats.showPanel(0); // 0: fps, 1:ms, 2:memory
+      const statsDom = stats.dom;
+      statsDom.setAttribute("id", "stats");
+      document.body.appendChild(statsDom);
+
+      // GUI
+      const model = {
+        wireframe: true,
+        showStats: true,
+        bgColor: 0x000,
+        gridFloor: true,
+      }
+      const gui = new dat.GUI();
+      const mainMenu = gui.addFolder("General Menu")
+      mainMenu.add(model, "wireframe").setValue(true).name('Wireframe')
+        .onChange(val => allMeshes.forEach(mesh => mesh.setWireframe(val)));
+      mainMenu.add(model, "gridFloor").setValue(true).name('Grid floor')
+        .onChange(val => {
+          if (val) {
+            scene.add(gridHelper);
+          } else {
+            scene.remove(gridHelper);
+          }
+        });
+      mainMenu.add(model, "showStats").setValue(true).name('Show Stats')
+        .onChange(val => {
+          if (val) {
+            statsDom.style.display = 'block'
+          }
+          else {
+            statsDom.style.display = 'none'
+          }
+        });
+      mainMenu.addColor(model, "bgColor").listen().name('Background Color').onChange(val => renderer.setClearColor(new THREE.Color(val)))
+
+      // ANIMATION
+      renderLoop();
+    }
+
+    function renderLoop() {
+      stats.begin();
+      renderer.render(scene, camera); // DRAW SCENE
+      stats.end();
+      stats.update();
+      requestAnimationFrame(renderLoop);
+    }
+
+    // EVENT LISTENERS & HANDLERS
+    document.addEventListener("DOMContentLoaded", init);
+
+    window.addEventListener("resize", () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+
+    })
+  </script>
+</body>
+
+</html>
