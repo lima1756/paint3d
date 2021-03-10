@@ -301,8 +301,8 @@
       cameraControls = new OrbitControls(camera, renderer.domElement);
 
       // SCENE GRAPH
-      let allMeshes = [new Octahedron()]
-      allMeshes.forEach(mesh => scene.add(mesh));
+      let allMeshes = []
+      // allMeshes.forEach(mesh => scene.add(mesh));
 
       // Floor
       const gridHelper = new THREE.GridHelper(10, 10);
