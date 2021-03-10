@@ -279,6 +279,22 @@
       }
     }
 
+    class Pikachu extends THREE.Mesh {
+      constructor() {
+        super()
+        let vertices = [-5.539737701416016, -3.768954277038574, 1.0100507985555396e-08, -4.307949066162109, -3.812735080718994, 1.0100507985555396e-08, -1.4385390281677246, -1.2008659839630127, 0.0, -1.4385390281677246, -1.2008659839630127, 0.0, -4.038570404052734, -1.2143789529800415]
+        this.geometry = new THREE.BufferGeometry();
+        this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+        this.material = new THREE.MeshBasicMaterial({ color: "yellow", wireframe: true });
+        this.name = "Pikachu"
+        this.geometry.scale(.03, .03, .03)
+        this.geometry.rotateX(-Math.PI / 2)
+      }
+      setWireframe(val) {
+        this.material.wireframe = val
+      }
+    }
+
     let renderer, scene, camera, cameraControls, stats;
 
     function init() {
@@ -301,8 +317,8 @@
       cameraControls = new OrbitControls(camera, renderer.domElement);
 
       // SCENE GRAPH
-      let allMeshes = []
-      // allMeshes.forEach(mesh => scene.add(mesh));
+      let allMeshes = [new Pikachu()]
+      allMeshes.forEach(mesh => scene.add(mesh));
 
       // Floor
       const gridHelper = new THREE.GridHelper(10, 10);

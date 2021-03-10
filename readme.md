@@ -18,7 +18,7 @@ En equipos, implementar una App Gráfica 3D interactiva de un Paint de modelos 3
         * Su color de dibujo **5 pts**
         * Su transparencia **5 pts**
         * Escala
-4. Pikachu [ivan]
+4. Pikachu [x]
 5. dodecaedro [alex]
 
 Subir a Canvas archivo index.html
