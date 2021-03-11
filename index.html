@@ -317,12 +317,15 @@
       cameraControls = new OrbitControls(camera, renderer.domElement);
 
       // SCENE GRAPH
-      let allMeshes = [new Pikachu()]
+      let allMeshes = [new Pine()]
       allMeshes.forEach(mesh => scene.add(mesh));
 
       // Floor
       const gridHelper = new THREE.GridHelper(10, 10);
       scene.add(gridHelper);
+
+      // AXES
+    scene.add( new THREE.AxesHelper( 20 ) );
 
       // STATS
       stats = new Stats();
@@ -360,6 +363,152 @@
           }
         });
       mainMenu.addColor(model, "bgColor").listen().name('Background Color').onChange(val => renderer.setClearColor(new THREE.Color(val)))
+
+      const modelMenu = gui.addFolder("Models Menu")
+      const params = {
+    	posX: 0,
+        posY: 0,
+        posZ: 0,
+        rot: 0
+      }
+      var x, y, z, rot;
+      
+      let sliderPosX = modelMenu.add(params, "posX").min(-5).max(5).step(0.5).setValue(0).name("Position X").listen().onChange(function(value) {
+            x = value;    
+      });
+      let sliderPosY = modelMenu.add(params, "posY").min(-5).max(5).step(0.5).setValue(0).name("Position Y").listen().onChange(function(value) {
+            y = value;   
+      });
+      let sliderPosZ = modelMenu.add(params, "posZ").min(-5).max(5).step(0.5).setValue(0).name("Position Z").listen().onChange(function(value) {
+            z = value;    
+      });
+      let sliderRot = modelMenu.add(params, "rot").min(-180).max(180).step(10).setValue(0).name("Rotation ").listen().onChange(function(value) {
+            rot = value * Math.PI / 180;
+      });
+
+      var quadObj = { Quad:function(){ 
+          var a = new Quad()
+          a.position.x = x
+          a.position.y = y
+          a.position.z = z
+          a.rotation.y = rot
+          allMeshes.push(a)
+          scene.add(a)
+        }};
+      modelMenu.add(quadObj,'Quad');
+
+      var triangleObj = { Triangle:function(){ 
+          var a = new Triangle();
+          a.position.x = x
+          a.position.y = y
+          a.position.z = z
+          a.rotation.y = rot
+          allMeshes.push(a)
+          scene.add(a)
+         }};
+      modelMenu.add(triangleObj,'Triangle');
+
+      var boxObj = { Box:function(){ 
+          var a = new Box()
+          a.position.x = x
+          a.position.y = y
+          a.position.z = z
+          a.rotation.y = rot
+          allMeshes.push(a)
+          scene.add(a)
+         }};
+      modelMenu.add(boxObj,'Box');
+
+      var pyramidObj = { Pyramid:function(){ 
+          var a = new Pyramid()
+          a.position.x = x
+          a.position.y = y
+          a.position.z = z
+          a.rotation.y = rot
+          allMeshes.push(a)
+          scene.add(a)
+         }};
+      modelMenu.add(pyramidObj,'Pyramid');
+
+      var houseObj = { House:function(){ 
+          var a = new House()
+          a.position.x = x
+          a.position.y = y
+          a.position.z = z
+          a.rotation.y = rot
+          allMeshes.push(a)
+          scene.add(a)
+         }};
+      modelMenu.add(houseObj,'House');
+
+      var circleObj = { Circle:function(){ 
+          var a = new Circle()
+          a.position.x = x
+          a.position.y = y
+          a.position.z = z
+          a.rotation.y = rot
+          allMeshes.push(a)
+          scene.add(a)
+         }};
+      modelMenu.add(circleObj,'Circle');
+
+      var cylinderObj = { Cylinder:function(){ 
+          var a = new Cylinder()
+          a.position.x = x
+          a.position.y = y
+          a.position.z = z
+          a.rotation.y = rot
+          allMeshes.push(a)
+          scene.add(a)
+         }};
+      modelMenu.add(cylinderObj,'Cylinder');
+
+      var coneObj = { Cone:function(){ 
+          var a = new Cone()
+          a.position.x = x
+          a.position.y = y
+          a.position.z = z
+          a.rotation.y = rot
+          allMeshes.push(a)
+          scene.add(a)
+         }};
+      modelMenu.add(coneObj,'Cone');
+
+      var pineObj = { Pine:function(){ 
+          var a = new Pine()
+          a.position.x = x
+          a.position.y = y
+          a.position.z = z
+          a.rotation.y = rot
+          allMeshes.push(a)
+          scene.add(a)
+         }};
+      modelMenu.add(pineObj,'Pine');
+
+      var octahedronObj = { Octahedron:function(){ 
+          var a = new Octahedron()
+          allMeshes.push(a)
+          a.position.x = x
+          a.position.y = y
+          a.position.z = z
+          a.rotation.y = rot
+          scene.add(a)
+         }};
+      modelMenu.add(octahedronObj,'Octahedron');
+
+      var pikachuObj = { Pikachu:function(){ 
+          var a = new Pikachu()
+          a.position.x = x
+          a.position.y = y
+          a.position.z = z
+          a.rotation.y = rot
+          allMeshes.push(a)
+          scene.add(a)
+         }};
+      modelMenu.add(pikachuObj,'Pikachu');
+
+
+      
 
       // ANIMATION
       renderLoop();
