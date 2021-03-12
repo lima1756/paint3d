@@ -191,6 +191,7 @@
                           -phi, -iphi,   0,
                           
         ]
+        this.vertices = this.vertices.map(v => v/phi);
         this.indexes = [
                     [14, 6, 10,
                     14, 10, 2,
@@ -598,7 +599,7 @@
       scene.add(transfControl);
       // SCENE GRAPH
 
-      let allMeshes = [new Dodecahedron(), new Dodecahedron()]
+      let allMeshes = []
       allMeshes.forEach(m => params.names.push(m.name+":"+params.names.length));
       allMeshes.forEach(m => scene.add(m));
       
