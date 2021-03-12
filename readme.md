@@ -4,6 +4,8 @@ En equipos, implementar una App Gráfica 3D interactiva de un Paint de modelos 3
 
 1. La posibilidad de seleccionar hasta 10 modelos diferentes **20 pts** [juanpy]
 2. Los modelos 3D no pueden ser primitivas de THREEJS, sino que deben ser geometrías propietarias: una pirámide, una caja, una casita,etc. **20 pts** [x]
+    1. Pikachu [ivan]
+    2. Dodecaedro [alex]
 3. La funcionalidad del Paint3D es básica:
     1. El usuario usa la interfaz gráfica para seleccionar un modelo y ubicarlo en la escena (posición y orientación) **10 pts** [juanpy]
     2. El usuario puede ubicar en la escena más de un mismo tipo de modelo **10 pts** [juanpy]
@@ -16,9 +18,7 @@ En equipos, implementar una App Gráfica 3D interactiva de un Paint de modelos 3
         * Su ubicación (posición y orientación) **5 pts**[x]
         * Su visualización como wireframe o sólido **5 pts**[x]
         * Su color de dibujo **5 pts**[x]
-        * Su transparencia **5 pts**
+        * Su transparencia **5 pts**[x]
         * Escala[x]
-4. Pikachu [x]
-5. Dodecaedro [x]
 
 Subir a Canvas archivo index.html

@@ -40,7 +40,7 @@
         this.geometry = new THREE.BufferGeometry();
         this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
         this.geometry.setIndex(index);
-        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.material = new THREE.MeshBasicMaterial({ color: "black", transparent: true, side: THREE.DoubleSide, opacity: 1, wireframe: true });
         this.name = "Quad"
       }
       setWireframe(val) {
@@ -48,6 +48,12 @@
       }
       getWireframe(val){
         return this.material.wireframe
+      }
+      setOpacity(val){
+        this.material.opacity = val
+      }
+      getOpacity(){
+        return this.material.opacity
       }
       setColor(color){
         this.material.color.setRGB(color.r, color.g, color.b);
@@ -64,7 +70,7 @@
         this.geometry = new THREE.BufferGeometry();
         this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
         this.geometry.setIndex(index);
-        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.material = new THREE.MeshBasicMaterial({ color: "black", transparent: true, side: THREE.DoubleSide, opacity: 1, wireframe: true });
         this.name = "Triangle"
       }
       setWireframe(val) {
@@ -72,6 +78,12 @@
       }
       getWireframe(val){
         return this.material.wireframe
+      }
+      setOpacity(val){
+        this.material.opacity = val
+      }
+      getOpacity(){
+        return this.material.opacity
       }
       setColor(color){
         this.material.color.setRGB(color.r, color.g, color.b);
@@ -102,6 +114,12 @@
       getWireframe(val){
         return this.faces[0].material.wireframe
       }
+      setOpacity(val){
+        this.faces.forEach(face => face.setOpacity(val))
+      }
+      getOpacity(){
+        return this.faces[0].material.opacity
+      }
       setColor(color){
         this.faces.forEach(f => f.material.color.setRGB(color.r, color.g, color.b));
       }
@@ -126,7 +144,7 @@
         this.geometry = new THREE.BufferGeometry();
         this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
         this.geometry.setIndex(index);
-        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.material = new THREE.MeshBasicMaterial({ color: "black", transparent: true, side: THREE.DoubleSide, opacity: 1, wireframe: true });
         this.name = "Pyramid"
       }
       setWireframe(val) {
@@ -135,12 +153,17 @@
       getWireframe(val){
         return this.material.wireframe
       }
+      setOpacity(val){
+        this.material.opacity = val
+      }
+      getOpacity(){
+        return this.material.opacity
+      }
       setColor(color){
         this.material.color.setRGB(color.r, color.g, color.b);
       }
     }
 
-    
     class Dodecahedron extends THREE.Group {
       constructor() {
         super();
@@ -224,7 +247,7 @@
         this.faces =[];
         for(let i=0 ;i < this.iColors.length; i++ ){
           this.colors.push( new THREE.Color(this.iColors[i][0], this.iColors[i][1], this.iColors[i][2]));
-          this.materials.push(new THREE.MeshBasicMaterial({color : this.colors[i], wireframe : true}));
+          this.materials.push(new THREE.MeshBasicMaterial({color : this.colors[i], transparent: true, side: THREE.DoubleSide, opacity: 1, wireframe : true}));
           this.geometries.push( new THREE.BufferGeometry() );
           this.geometries[i].setAttribute("position", new THREE.Float32BufferAttribute(this.vertices, 3));
           this.geometries[i].setIndex(this.indexes[i]);
@@ -239,6 +262,12 @@
       }
       getWireframe(val){
         return this.materials[0].wireframe
+      }
+      setOpacity(val){
+        this.materials.forEach(m => m.opacity = val);
+      }
+      getOpacity(){
+        return this.materials[0].opacity
       }
 
       setColor(color){
@@ -262,6 +291,13 @@
       }
       getWireframe(val){
         return this.base.material.wireframe
+      }
+      setOpacity(val){
+        this.base.setOpacity(val);
+        this.roof.setOpacity(val);
+      }
+      getOpacity(){
+        return this.base.material.opacity
       }
 
       setColor(color){
@@ -289,7 +325,7 @@
         this.geometry = new THREE.BufferGeometry();
         this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
         this.geometry.setIndex(index);
-        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.material = new THREE.MeshBasicMaterial({ color: "black", transparent: true, side: THREE.DoubleSide, opacity: 1, wireframe: true });
         this.name = "Circle"
       }
       setWireframe(val) {
@@ -297,6 +333,12 @@
       }
       getWireframe(val){
         return this.material.wireframe
+      }
+      setOpacity(val){
+        this.material.opacity = val
+      }
+      getOpacity(){
+        return this.material.opacity
       }
 
       setColor(color){
@@ -343,7 +385,7 @@
         this.geometry = new THREE.BufferGeometry();
         this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
         this.geometry.setIndex(index);
-        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.material = new THREE.MeshBasicMaterial({ color: "black",transparent: true, side: THREE.DoubleSide, opacity: 1, wireframe: true });
         this.name = "Cylinder"
       }
       setWireframe(val) {
@@ -351,6 +393,12 @@
       }
       getWireframe(val){
         return this.material.wireframe
+      }
+      setOpacity(val){
+        this.material.opacity = val
+      }
+      getOpacity(){
+        return this.material.opacity
       }
 
       setColor(color){
@@ -380,7 +428,7 @@
         this.geometry = new THREE.BufferGeometry();
         this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
         this.geometry.setIndex(index);
-        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.material = new THREE.MeshBasicMaterial({ color: "black", transparent: true, side: THREE.DoubleSide, opacity: 1, wireframe: true });
         this.name = "Cone"
       }
       setWireframe(val) {
@@ -388,6 +436,12 @@
       }
       getWireframe(val){
         return this.material.wireframe
+      }
+      setOpacity(val){
+        this.material.opacity = val
+      }
+      getOpacity(){
+        return this.material.opacity
       }
 
       setColor(color){
@@ -411,6 +465,13 @@
       }
       getWireframe(val){
         return this.base.material.wireframe
+      }
+      setOpacity(val){
+        this.base.material.opacity = val
+        this.top.material.opacity = val
+      }
+      getOpacity(){
+        return this.base.material.opacity
       }
 
       setColor(color){
@@ -439,7 +500,7 @@
         this.geometry = new THREE.BufferGeometry();
         this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
         this.geometry.setIndex(index);
-        this.material = new THREE.MeshBasicMaterial({ color: "black", wireframe: true });
+        this.material = new THREE.MeshBasicMaterial({ color: "black",transparent: true,  side: THREE.DoubleSide, opacity: 1, wireframe: true });
         this.name = "Octahedron"
       }
       setWireframe(val) {
@@ -448,6 +509,13 @@
       getWireframe(val){
         return this.material.wireframe
       }
+      setOpacity(val){
+        this.material.opacity = val
+      }
+      getOpacity(){
+        return this.material.opacity
+      }
+      
       setColor(color){
         this.material.color.setRGB(color.r, color.g, color.b);
       }
@@ -459,7 +527,7 @@
         let vertices = [-5.539737701416016, -3.768954277038574, 1.0100507985555396e-08, -4.307949066162109, -3.812735080718994, 1.0100507985555396e-08, -1.4385390281677246, -1.2008659839630127, 0.0, -1.4385390281677246, -1.2008659839630127, 0.0, -4.038570404052734, -1.2143789529800415]
         this.geometry = new THREE.BufferGeometry();
         this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
-        this.material = new THREE.MeshBasicMaterial({ color: "yellow", wireframe: true });
+        this.material = new THREE.MeshBasicMaterial({ color: "yellow", transparent: true,  side: THREE.DoubleSide, opacity: 1, wireframe: true });
         this.name = "Pikachu"
         this.geometry.scale(.03, .03, .03)
         this.geometry.rotateX(-Math.PI / 2)
@@ -469,6 +537,12 @@
       }
       getWireframe(val){
         return this.material.wireframe
+      }
+      setOpacity(val){
+        this.material.opacity = val
+      }
+      getOpacity(){
+        return this.material.opacity
       }
       setColor(color){
         this.material.color.setRGB(color.r, color.g, color.b);
@@ -493,6 +567,7 @@
         selectedObjectMesh : null,
         selectedObjectWireframe: false,
         seletedObjectColor : new THREE.Color(0,.5, 0.8),
+        selectedObjectOpacity : 1,
       };
 
 
@@ -558,9 +633,8 @@
             console.log(nameAndIndx);
             let indx = parseInt(nameAndIndx[nameAndIndx.length-1], 10);
             params.selectedObjectMesh = allMeshes[indx];
-            console.log(allMeshes[indx].wireframe);
             params.selectedObjectWireframe = allMeshes[indx].getWireframe();
-            console.log(indx);
+            params.selectedObjectOpacity = allMeshes[indx].getWireframe();
             params.rotate = false;
             params.scale = false;
             params.translate = false;
@@ -573,7 +647,7 @@
             params.translate = false;
         }
       });
-      const currentObject = gui.addFolder("Selected Object")
+      const currentObject = gui.addFolder("Current Selected Object")
       currentObject.add(params, "translate").setValue(false).name("Translate Ctrl" ).listen().onChange(function(value) {
         if(value) {
           if(params.selectedObjectMesh){
@@ -639,6 +713,11 @@
                         params.selectedObjectMesh.setColor(color);
                       }
                     });
+      currentObject.add(params, "selectedObjectOpacity").min(0).max(1).step(0.05).setValue(1).name("Opacity").listen().onChange(val => {
+                      if(params.selectedObjectMesh){
+                        params.selectedObjectMesh.setOpacity(val);
+                      }
+                    });  
 
       const mainMenu = gui.addFolder("General Menu")
       mainMenu.add(model, "wireframe").setValue(true).name('Wireframe')
