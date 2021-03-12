@@ -115,7 +115,7 @@
         this.faces[4].position.y = 0.5
         this.faces[5].rotation.x = Math.PI / 2
         this.faces[5].position.y = -0.5
-        this.faces.forEach(face => { this.add(face) })
+        this.faces.forEach(face => this.add(face))
         this.name = "Box"
       }
       setWireframe(val) {
@@ -201,7 +201,7 @@
           -phi, -iphi, 0,
 
         ]
-        this.vertices = this.vertices.map(v => v / phi);
+        this.vertices = this.vertices.map(v => v * iphi); // scaling oposite vertex have now distance of 2.
         this.indexes = [
           [14, 6, 10,
             14, 10, 2,
@@ -240,7 +240,18 @@
             2, 11, 3,
             2, 3, 17]
         ];
-        this.iColors = [[1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 1, 1], [1, 1, 0], [1, 0, 1], [0.9, 0.9, 0.9], [0.5, 0.5, 0.5], [1, 0.5, 0], [0.5, 0, 1], [1, 0.5, 0.5], [0.5, 0.5, 1]];
+        this.iColors = [[1, 0, 0], 
+          [0, 1, 0], 
+          [0, 0, 1], 
+          [0, 1, 1], 
+          [1, 1, 0], 
+          [1, 0, 1], 
+          [0.9, 0.9, 0.9], 
+          [0.5, 0.5, 0.5], 
+          [1, 0.5, 0], 
+          [0.5, 0, 1], 
+          [1, 0.5, 0.5], 
+          [0.5, 0.5, 1]];
         this.colors = [];
         this.materials = [];
         this.geometries = [];
@@ -555,7 +566,7 @@
     function init() {
 
       //Model
-      let params = {
+      const model = {
         posX: 0,
         posY: 0,
         posZ: 0,
@@ -569,6 +580,10 @@
         selectedObjectWireframe: false,
         seletedObjectColor: new THREE.Color(0, .5, 0.8),
         selectedObjectOpacity: 1,
+        wireframe: true,
+        showStats: true,
+        bgColor: 0x000,
+        gridFloor: true,
       };
 
 
@@ -591,7 +606,7 @@
       let near = 0.1;
       let far = 100;
       camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-      camera.position.set(0, 0, 3);
+      camera.position.set(2.5, 3, 3.4);
       cameraControls = new OrbitControls(camera, renderer.domElement);
 
       // CONTROL TRANSFORM
@@ -604,7 +619,7 @@
       // SCENE GRAPH
 
       let allMeshes = []
-      allMeshes.forEach(m => params.names.push(m.name + ":" + params.names.length));
+      allMeshes.forEach(m => model.names.push(m.name + ":" + model.names.length));
       allMeshes.forEach(m => scene.add(m));
 
 
@@ -623,12 +638,6 @@
       document.body.appendChild(statsDom);
 
       // GUI
-      const model = {
-        wireframe: true,
-        showStats: true,
-        bgColor: 0x000,
-        gridFloor: true,
-      };
 
       const gui = new dat.GUI();
 
@@ -636,7 +645,7 @@
       mainMenu.add(model, "wireframe").setValue(true).name('Wireframe')
         .onChange(val => {
           allMeshes.forEach(mesh => mesh.setWireframe(val));
-          params.selectedObjectWireframe = val;
+          model.selectedObjectWireframe = val;
         });
       mainMenu.add(model, "gridFloor").setValue(true).name('Grid floor')
         .onChange(val => {
@@ -660,10 +669,10 @@
 
       const modelMenu = gui.addFolder("Create New Model")
 
-      let sliderPosX = modelMenu.add(params, "posX").min(-5).max(5).step(0.5).setValue(0).name("Initial Position X").listen();
-      let sliderPosY = modelMenu.add(params, "posY").min(-5).max(5).step(0.5).setValue(0).name("Initial Position Y").listen();
-      let sliderPosZ = modelMenu.add(params, "posZ").min(-5).max(5).step(0.5).setValue(0).name("Initial Position Z").listen();
-      let sliderRot = modelMenu.add(params, "rot").min(-180).max(180).step(10).setValue(0).name("Initial Rotation Y").listen();
+      let sliderPosX = modelMenu.add(model, "posX").min(-5).max(5).step(0.5).setValue(0).name("Initial Position X").listen();
+      let sliderPosY = modelMenu.add(model, "posY").min(-5).max(5).step(0.5).setValue(0).name("Initial Position Y").listen();
+      let sliderPosZ = modelMenu.add(model, "posZ").min(-5).max(5).step(0.5).setValue(0).name("Initial Position Z").listen();
+      let sliderRot = modelMenu.add(model, "rot").min(-180).max(180).step(10).setValue(0).name("Initial Rotation Y").listen();
 
       const updateDropdown = (target, list) => {
         let innerHTMLStr = "";
@@ -676,13 +685,13 @@
       }
 
       const addObject = (mesh) => {
-        mesh.position.x = params.posX
-        mesh.position.y = params.posY
-        mesh.position.z = params.posZ
-        mesh.rotation.y = params.rot * Math.PI / 180
-        params.names.push(mesh.name + ":" + params.names.length);
+        mesh.position.x = model.posX
+        mesh.position.y = model.posY
+        mesh.position.z = model.posZ
+        mesh.rotation.y = model.rot * Math.PI / 180
+        model.names.push(mesh.name + ":" + model.names.length);
         allMeshes.push(mesh)
-        updateDropdown(pickedObj, params.names)
+        updateDropdown(pickedObj, model.names)
         scene.add(mesh)
         selectObject.domElement.style.display = "block"
       }
@@ -707,97 +716,97 @@
       const selectObject = gui.addFolder("Modify an existing object");
       selectObject.domElement.id = "selectObjectMenu"
       selectObject.domElement.style.display = "none"
-      const pickedObj = selectObject.add(params, 'selectedObjectName', params.names).name("Select an object").listen().onChange(function (value) {
+      const pickedObj = selectObject.add(model, 'selectedObjectName', model.names).name("Select an object").listen().onChange(function (value) {
         if (value) {
           let nameAndIndx = value.split(":");
           let indx = parseInt(nameAndIndx[nameAndIndx.length - 1], 10);
-          params.selectedObjectMesh = allMeshes[indx];
-          params.selectedObjectWireframe = allMeshes[indx].getWireframe();
-          params.selectedObjectOpacity = allMeshes[indx].getWireframe();
-          params.rotate = false;
-          params.scale = false;
-          params.translate = false;
+          model.selectedObjectMesh = allMeshes[indx];
+          model.selectedObjectWireframe = allMeshes[indx].getWireframe();
+          model.selectedObjectOpacity = allMeshes[indx].getWireframe();
+          model.rotate = false;
+          model.scale = false;
+          model.translate = false;
           document.getElementById("currentObjectMenu").style.display = "block"
         }
         else {
-          params.selectedObjectName = null;
-          params.selectedObjectMesh = null;
-          params.rotate = false;
-          params.scale = false;
-          params.translate = false;
+          model.selectedObjectName = null;
+          model.selectedObjectMesh = null;
+          model.rotate = false;
+          model.scale = false;
+          model.translate = false;
           document.getElementById("currentObjectMenu").style.display = "none"
         }
       });
       const currentObject = selectObject.addFolder("Current Selected Object")
       currentObject.domElement.id = "currentObjectMenu"
       currentObject.domElement.style.display = "none"
-      currentObject.add(params, "translate").setValue(false).name("Translate Ctrl").listen().onChange(function (value) {
+      currentObject.add(model, "translate").setValue(false).name("Translate Ctrl").listen().onChange(function (value) {
         if (value) {
-          if (params.selectedObjectMesh) {
-            transfControl.attach(params.selectedObjectMesh);
+          if (model.selectedObjectMesh) {
+            transfControl.attach(model.selectedObjectMesh);
             transfControl.setMode("translate");
           }
-          params.rotate = false;
-          params.scale = false;
+          model.rotate = false;
+          model.scale = false;
         }
         else {
           transfControl.detach();
         }
       });
 
-      currentObject.add(params, "rotate").setValue(false).name("Rotate Ctrl").listen().onChange(function (value) {
+      currentObject.add(model, "rotate").setValue(false).name("Rotate Ctrl").listen().onChange(function (value) {
         if (value) {
-          if (params.selectedObjectMesh) {
-            transfControl.attach(params.selectedObjectMesh);
+          if (model.selectedObjectMesh) {
+            transfControl.attach(model.selectedObjectMesh);
             transfControl.setMode("rotate");
           }
-          params.translate = false;
-          params.scale = false;
+          model.translate = false;
+          model.scale = false;
         }
         else {
           transfControl.detach();
         }
       });
 
-      currentObject.add(params, "scale").setValue(false).name("Scale Ctrl").listen().onChange(function (value) {
+      currentObject.add(model, "scale").setValue(false).name("Scale Ctrl").listen().onChange(function (value) {
         if (value) {
-          if (params.selectedObjectMesh) {
-            transfControl.attach(params.selectedObjectMesh);
+          if (model.selectedObjectMesh) {
+            transfControl.attach(model.selectedObjectMesh);
             transfControl.setMode("scale");
           }
-          params.rotate = false;
-          params.translate = false;
+          model.rotate = false;
+          model.translate = false;
         }
         else {
           transfControl.detach();
         }
       });
 
-      currentObject.add(params, "selectedObjectWireframe")
+      currentObject.add(model, "selectedObjectWireframe")
         .setValue(false)
         .name('Wireframe')
         .listen()
         .onChange(val => {
-          if (params.selectedObjectMesh) {
-            params.selectedObjectMesh.setWireframe(val)
+          if (model.selectedObjectMesh) {
+            model.selectedObjectMesh.setWireframe(val)
           }
         });
-      currentObject.addColor(params, "seletedObjectColor")
+      currentObject.addColor(model, "seletedObjectColor")
         .name('Color')
         .onChange(val => {
-          if (params.selectedObjectMesh) {
+          if (model.selectedObjectMesh) {
 
             let color = {
               r: val.r / 255,
               g: val.g / 255,
               b: val.b / 255,
             }
-            params.selectedObjectMesh.setColor(color);
+            model.selectedObjectMesh.setColor(color);
           }
         });
-      currentObject.add(params, "selectedObjectOpacity").min(0).max(1).step(0.05).setValue(1).name("Opacity").listen().onChange(val => {
-        if (params.selectedObjectMesh) {
-          params.selectedObjectMesh.setOpacity(val);
+      currentObject.add(model, "selectedObjectOpacity").min(0).max(1).step(0.05).setValue(1).name("Opacity").listen().onChange(val => {
+        if (model.selectedObjectMesh) {
+          model.selectedObjectMesh.setOpacity(val);
         }
       });
 
