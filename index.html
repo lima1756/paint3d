@@ -22,6 +22,7 @@
   <script type="module">
     import * as THREE from "https://unpkg.com/three/build/three.module.js";
     import { OrbitControls } from "https://unpkg.com/three/examples/jsm/controls/OrbitControls.js";
+    import {TransformControls} from "https://unpkg.com/three/examples/jsm/controls/TransformControls.js";
     import Stats from "https://unpkg.com/three/examples/jsm/libs/stats.module.js";
     import dat from "https://unpkg.com/three/examples/jsm/libs/dat.gui.module.js";
 
@@ -45,6 +46,12 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
+      getWireframe(val){
+        return this.material.wireframe
+      }
+      setColor(color){
+        this.material.color.setRGB(color.r, color.g, color.b);
+      }
     }
 
     class Triangle extends THREE.Mesh {
@@ -62,6 +69,12 @@
       }
       setWireframe(val) {
         this.material.wireframe = val
+      }
+      getWireframe(val){
+        return this.material.wireframe
+      }
+      setColor(color){
+        this.material.color.setRGB(color.r, color.g, color.b);
       }
     }
 
@@ -85,6 +98,12 @@
       }
       setWireframe(val) {
         this.faces.forEach(face => face.setWireframe(val))
+      }
+      getWireframe(val){
+        return this.faces[0].material.wireframe
+      }
+      setColor(color){
+        this.faces.forEach(f => f.material.color.setRGB(color.r, color.g, color.b));
       }
     }
 
@@ -112,6 +131,12 @@
       }
       setWireframe(val) {
         this.material.wireframe = val
+      }
+      getWireframe(val){
+        return this.material.wireframe
+      }
+      setColor(color){
+        this.material.color.setRGB(color.r, color.g, color.b);
       }
     }
 
@@ -207,14 +232,17 @@
           this.add(this.faces[i]);
         }
         
-
-        
-        
-        
         this.name = "Dodecahedron"
       }
       setWireframe(val) {
         this.materials.forEach(m => m.wireframe = val);
+      }
+      getWireframe(val){
+        return this.materials[0].wireframe
+      }
+
+      setColor(color){
+        this.materials.forEach(m => m.color.setRGB(color.r, color.g, color.b));
       }
     }
 
@@ -231,6 +259,14 @@
       setWireframe(val) {
         this.base.setWireframe(val);
         this.roof.setWireframe(val);
+      }
+      getWireframe(val){
+        return this.base.material.wireframe
+      }
+
+      setColor(color){
+        this.base.material.color.setRGB(color.r, color.g, color.b);
+        this.roof.material.color.setRGB(color.r, color.g, color.b);
       }
     }
 
@@ -258,6 +294,13 @@
       }
       setWireframe(val) {
         this.material.wireframe = val
+      }
+      getWireframe(val){
+        return this.material.wireframe
+      }
+
+      setColor(color){
+        this.material.color.setRGB(color.r, color.g, color.b);
       }
     }
 
@@ -306,6 +349,13 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
+      getWireframe(val){
+        return this.material.wireframe
+      }
+
+      setColor(color){
+        this.material.color.setRGB(color.r, color.g, color.b);
+      }
     }
 
     class Cone extends THREE.Mesh {
@@ -336,6 +386,13 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
+      getWireframe(val){
+        return this.material.wireframe
+      }
+
+      setColor(color){
+        this.material.color.setRGB(color.r, color.g, color.b);
+      }
     }
 
     class Pine extends THREE.Group {
@@ -351,6 +408,14 @@
       setWireframe(val) {
         this.base.setWireframe(val);
         this.top.setWireframe(val);
+      }
+      getWireframe(val){
+        return this.base.material.wireframe
+      }
+
+      setColor(color){
+        this.base.material.color.setRGB(color.r, color.g, color.b);
+        this.cone.material.color.setRGB(color.r, color.g, color.b);
       }
     }
 
@@ -380,6 +445,12 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
+      getWireframe(val){
+        return this.material.wireframe
+      }
+      setColor(color){
+        this.material.color.setRGB(color.r, color.g, color.b);
+      }
     }
 
     class Pikachu extends THREE.Mesh {
@@ -396,11 +467,35 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
+      getWireframe(val){
+        return this.material.wireframe
+      }
+      setColor(color){
+        this.material.color.setRGB(color.r, color.g, color.b);
+      }
     }
 
     let renderer, scene, camera, cameraControls, stats;
 
     function init() {
+
+      //Model
+      let params = {
+        posX: 0,
+        posY: 0,
+        posZ: 0,
+        rot: 0,
+        translate: false,
+        rotate: false,
+        scale: false,
+        names: [],
+        selectedObjectName : null,
+        selectedObjectMesh : null,
+        selectedObjectWireframe: false,
+        seletedObjectColor : new THREE.Color(0,.5, 0.8),
+      };
+
+
       // RENDERER ENGINE
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setClearColor(new THREE.Color(1, 1, 1));
@@ -419,16 +514,26 @@
       camera.position.set(0, 0, 3);
       cameraControls = new OrbitControls(camera, renderer.domElement);
 
+      // CONTROL TRANSFORM
+      let transfControl = new TransformControls(camera, renderer.domElement);
+      transfControl.addEventListener('dragging-changed', 
+                                        function (event){
+                                            cameraControls.enabled = ! event.value;
+                                        });
+      scene.add(transfControl);
       // SCENE GRAPH
-      let allMeshes = [new Dodecahedron()]
-      allMeshes.forEach(mesh => scene.add(mesh));
+
+      let allMeshes = [new Dodecahedron(), new Dodecahedron()]
+      allMeshes.forEach(m => params.names.push(m.name+":"+params.names.length));
+      allMeshes.forEach(m => scene.add(m));
+      
 
       // Floor
       const gridHelper = new THREE.GridHelper(10, 10);
       scene.add(gridHelper);
 
       // AXES
-    scene.add( new THREE.AxesHelper( 20 ) );
+      scene.add( new THREE.AxesHelper( 20 ) );
 
       // STATS
       stats = new Stats();
@@ -443,11 +548,104 @@
         showStats: true,
         bgColor: 0x000,
         gridFloor: true,
-      }
+      };
+
       const gui = new dat.GUI();
+      const selectObject = gui.addFolder("Select Object");
+      const pickedObj = selectObject.add(params, 'selectedObjectName', params.names).listen().onChange(function(value) {
+        if(value) {
+            let nameAndIndx = value.split(":");
+            console.log(nameAndIndx);
+            let indx = parseInt(nameAndIndx[nameAndIndx.length-1], 10);
+            params.selectedObjectMesh = allMeshes[indx];
+            console.log(allMeshes[indx].wireframe);
+            params.selectedObjectWireframe = allMeshes[indx].getWireframe();
+            console.log(indx);
+            params.rotate = false;
+            params.scale = false;
+            params.translate = false;
+        }
+        else {
+            params.selectedObjectName = null;
+            params.selectedObjectMesh = null;
+            params.rotate = false;
+            params.scale = false;
+            params.translate = false;
+        }
+      });
+      const currentObject = gui.addFolder("Selected Object")
+      currentObject.add(params, "translate").setValue(false).name("Translate Ctrl" ).listen().onChange(function(value) {
+        if(value) {
+          if(params.selectedObjectMesh){
+            transfControl.attach(params.selectedObjectMesh);
+            transfControl.setMode("translate");
+          }
+          params.rotate = false;
+          params.scale = false;
+        }
+        else {
+            transfControl.detach();
+        }
+      });
+
+      currentObject.add(params, "rotate").setValue(false).name("Rotate Ctrl" ).listen().onChange(function(value) {
+          if(value) {
+            if(params.selectedObjectMesh){
+              transfControl.attach(params.selectedObjectMesh);
+              transfControl.setMode("rotate");
+            }
+            params.translate = false;
+            params.scale = false;
+          }
+          else {
+              transfControl.detach();
+          }
+      });
+
+      currentObject.add(params, "scale").setValue(false).name("Scale Ctrl" ).listen().onChange(function(value) {
+          if(value) {
+            if(params.selectedObjectMesh){
+              transfControl.attach(params.selectedObjectMesh);
+              transfControl.setMode("scale");
+            }
+            params.rotate = false;
+            params.translate = false;
+          }
+          else {
+              transfControl.detach();
+          }
+      });
+
+      currentObject.add(params, "selectedObjectWireframe")
+                    .setValue(false)
+                    .name('Wireframe')
+                    .listen()
+                    .onChange(val => {
+                      if(params.selectedObjectMesh){
+                        params.selectedObjectMesh.setWireframe(val)
+                      }
+                    });
+      currentObject.addColor(params, "seletedObjectColor")
+                    .name('Color')
+                    .onChange(val => {
+                      console.log(params.seletedObjectColor)
+                      if(params.selectedObjectMesh){
+
+                        let color = {
+                          r: val.r/255,
+                          g: val.g/255,
+                          b: val.b/255,
+                        }
+                        params.selectedObjectMesh.setColor(color);
+                      }
+                    });
+
       const mainMenu = gui.addFolder("General Menu")
       mainMenu.add(model, "wireframe").setValue(true).name('Wireframe')
-        .onChange(val => allMeshes.forEach(mesh => mesh.setWireframe(val)));
+        .onChange(val => {
+          allMeshes.forEach(mesh => mesh.setWireframe(val));
+          params.selectedObjectWireframe = val;
+        });
       mainMenu.add(model, "gridFloor").setValue(true).name('Grid floor')
         .onChange(val => {
           if (val) {
@@ -467,148 +665,168 @@
         });
       mainMenu.addColor(model, "bgColor").listen().name('Background Color').onChange(val => renderer.setClearColor(new THREE.Color(val)))
 
-      const modelMenu = gui.addFolder("Models Menu")
-      const params = {
-    	posX: 0,
-        posY: 0,
-        posZ: 0,
-        rot: 0
-      }
-      var x, y, z, rot;
+      const modelMenu = gui.addFolder("New Model")
       
-      let sliderPosX = modelMenu.add(params, "posX").min(-5).max(5).step(0.5).setValue(0).name("Position X").listen().onChange(function(value) {
-            x = value;    
+      let sliderPosX = modelMenu.add(params, "posX").min(-5).max(5).step(0.5).setValue(0).name("Initial Position X").listen().onChange(function(value) {   
       });
-      let sliderPosY = modelMenu.add(params, "posY").min(-5).max(5).step(0.5).setValue(0).name("Position Y").listen().onChange(function(value) {
-            y = value;   
+      let sliderPosY = modelMenu.add(params, "posY").min(-5).max(5).step(0.5).setValue(0).name("Initial Position Y").listen().onChange(function(value) {
       });
-      let sliderPosZ = modelMenu.add(params, "posZ").min(-5).max(5).step(0.5).setValue(0).name("Position Z").listen().onChange(function(value) {
-            z = value;    
+      let sliderPosZ = modelMenu.add(params, "posZ").min(-5).max(5).step(0.5).setValue(0).name("Initial Position Z").listen().onChange(function(value) {   
       });
-      let sliderRot = modelMenu.add(params, "rot").min(-180).max(180).step(10).setValue(0).name("Rotation ").listen().onChange(function(value) {
+      let sliderRot = modelMenu.add(params, "rot").min(-180).max(180).step(10).setValue(0).name("Initial Rotation Y").listen().onChange(function(value) {
             rot = value * Math.PI / 180;
       });
 
+      const updateDropdown = (target, list) =>{   
+        let innerHTMLStr = "";
+        for(var i=0; i<list.length; i++){
+            var str = "<option value='" + list[i] + "'>" + list[i] + "</option>";
+            innerHTMLStr += str;        
+        }
+
+        if (innerHTMLStr != "") target.domElement.children[0].innerHTML = innerHTMLStr;
+      }
+
+      const addMesh = (m) =>{
+        params.names.push(m.name+":"+params.names.length);
+        allMeshes.push(m)
+        updateDropdown(pickedObj, params.names)
+      };
+
       var quadObj = { Quad:function(){ 
           var a = new Quad()
-          a.position.x = x
-          a.position.y = y
-          a.position.z = z
-          a.rotation.y = rot
-          allMeshes.push(a)
+          a.position.x = params.posX
+          a.position.y = params.posY
+          a.position.z = params.posZ
+          a.rotation.y = params.rot
+          addMesh(a);
           scene.add(a)
+          console.log(allMeshes);
         }};
       modelMenu.add(quadObj,'Quad');
 
       var triangleObj = { Triangle:function(){ 
           var a = new Triangle();
-          a.position.x = x
-          a.position.y = y
-          a.position.z = z
-          a.rotation.y = rot
-          allMeshes.push(a)
+          a.position.x = params.posX
+          a.position.y = params.posY
+          a.position.z = params.posZ
+          a.rotation.y = params.rot
+          addMesh(a)
           scene.add(a)
          }};
       modelMenu.add(triangleObj,'Triangle');
 
       var boxObj = { Box:function(){ 
           var a = new Box()
-          a.position.x = x
-          a.position.y = y
-          a.position.z = z
-          a.rotation.y = rot
-          allMeshes.push(a)
+          a.position.x = params.posX
+          a.position.y = params.posY
+          a.position.z = params.posZ
+          a.rotation.y = params.rot
+          addMesh(a)
           scene.add(a)
          }};
       modelMenu.add(boxObj,'Box');
 
       var pyramidObj = { Pyramid:function(){ 
           var a = new Pyramid()
-          a.position.x = x
-          a.position.y = y
-          a.position.z = z
-          a.rotation.y = rot
-          allMeshes.push(a)
+          a.position.x = params.posX
+          a.position.y = params.posY
+          a.position.z = params.posZ
+          a.rotation.y = params.rot
+          addMesh(a)
           scene.add(a)
          }};
       modelMenu.add(pyramidObj,'Pyramid');
 
       var houseObj = { House:function(){ 
           var a = new House()
-          a.position.x = x
-          a.position.y = y
-          a.position.z = z
-          a.rotation.y = rot
-          allMeshes.push(a)
+          a.position.x = params.posX
+          a.position.y = params.posY
+          a.position.z = params.posZ
+          a.rotation.y = params.rot
+          addMesh(a)
           scene.add(a)
          }};
       modelMenu.add(houseObj,'House');
 
       var circleObj = { Circle:function(){ 
           var a = new Circle()
-          a.position.x = x
-          a.position.y = y
-          a.position.z = z
-          a.rotation.y = rot
-          allMeshes.push(a)
+          a.position.x = params.posX
+          a.position.y = params.posY
+          a.position.z = params.posZ
+          a.rotation.y = params.rot
+          addMesh(a)
           scene.add(a)
          }};
       modelMenu.add(circleObj,'Circle');
 
       var cylinderObj = { Cylinder:function(){ 
           var a = new Cylinder()
-          a.position.x = x
-          a.position.y = y
-          a.position.z = z
-          a.rotation.y = rot
-          allMeshes.push(a)
+          a.position.x = params.posX
+          a.position.y = params.posY
+          a.position.z = params.posZ
+          a.rotation.y = params.rot
+          addMesh(a)
           scene.add(a)
          }};
       modelMenu.add(cylinderObj,'Cylinder');
 
       var coneObj = { Cone:function(){ 
           var a = new Cone()
-          a.position.x = x
-          a.position.y = y
-          a.position.z = z
-          a.rotation.y = rot
-          allMeshes.push(a)
+          a.position.x = params.posX
+          a.position.y = params.posY
+          a.position.z = params.posZ
+          a.rotation.y = params.rot
+          addMesh(a)
           scene.add(a)
          }};
       modelMenu.add(coneObj,'Cone');
 
       var pineObj = { Pine:function(){ 
           var a = new Pine()
-          a.position.x = x
-          a.position.y = y
-          a.position.z = z
-          a.rotation.y = rot
-          allMeshes.push(a)
+          a.position.x = params.posX
+          a.position.y = params.posY
+          a.position.z = params.posZ
+          a.rotation.y = params.rot
+          addMesh(a)
           scene.add(a)
          }};
       modelMenu.add(pineObj,'Pine');
 
       var octahedronObj = { Octahedron:function(){ 
           var a = new Octahedron()
-          allMeshes.push(a)
-          a.position.x = x
-          a.position.y = y
-          a.position.z = z
-          a.rotation.y = rot
+          addMesh(a)
+          a.position.x = params.posX
+          a.position.y = params.posY
+          a.position.z = params.posZ
+          a.rotation.y = params.rot
           scene.add(a)
+          console.log('que onda');
          }};
       modelMenu.add(octahedronObj,'Octahedron');
 
       var pikachuObj = { Pikachu:function(){ 
           var a = new Pikachu()
-          a.position.x = x
-          a.position.y = y
-          a.position.z = z
-          a.rotation.y = rot
-          allMeshes.push(a)
+          a.position.x = params.posX
+          a.position.y = params.posY
+          a.position.z = params.posZ
+          a.rotation.y = params.rot
+          addMesh(a)
           scene.add(a)
          }};
       modelMenu.add(pikachuObj,'Pikachu');
+
+      var dodecahedronObj = { Dodecahedron:function(){ 
+          var a = new Dodecahedron()
+          a.position.x = params.posX
+          a.position.y = params.posY
+          a.position.z = params.posZ
+          a.rotation.y = params.rot
+          addMesh(a)
+          scene.add(a)
+         }};
+      modelMenu.add(dodecahedronObj,'Dodecahedron');
+
 
 
       

@@ -13,12 +13,12 @@ En equipos, implementar una App Gráfica 3D interactiva de un Paint de modelos 3
         * Visualizar/ocultar el piso en z = 0 (se puede usar THREE.PlaneGeometry) **5 pts** [x]
         * Visualizar/ocultar el panel de estadísticasde desempeño (fps, tiempo y memoria)  **5 pts** [x]
     4. El usuario debe poder aplicar la siguiente funcionalidad a cada objeto de la escena: [alex]
-        * Su ubicación (posición y orientación) **5 pts**
-        * Su visualización como wireframe o sólido **5 pts**
-        * Su color de dibujo **5 pts**
+        * Su ubicación (posición y orientación) **5 pts**[x]
+        * Su visualización como wireframe o sólido **5 pts**[x]
+        * Su color de dibujo **5 pts**[x]
         * Su transparencia **5 pts**
-        * Escala
+        * Escala[x]
 4. Pikachu [x]
-5. dodecaedro [alex]
+5. Dodecaedro [x]
 
 Subir a Canvas archivo index.html
