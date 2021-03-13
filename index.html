@@ -56,7 +56,7 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
-      getWireframe(val) {
+      getWireframe() {
         return this.material.wireframe
       }
       setOpacity(val) {
@@ -86,7 +86,7 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
-      getWireframe(val) {
+      getWireframe() {
         return this.material.wireframe
       }
       setOpacity(val) {
@@ -121,17 +121,17 @@
       setWireframe(val) {
         this.faces.forEach(face => face.setWireframe(val))
       }
-      getWireframe(val) {
-        return this.faces[0].material.wireframe
+      getWireframe() {
+        return this.faces[0].getWireframe()
       }
       setOpacity(val) {
         this.faces.forEach(face => face.setOpacity(val))
       }
       getOpacity() {
-        return this.faces[0].material.opacity
+        return this.faces[0].getOpacity()
       }
       setColor(color) {
-        this.faces.forEach(f => f.material.color.setRGB(color.r, color.g, color.b));
+        this.faces.forEach(f => f.setColor(color));
       }
     }
 
@@ -160,7 +160,7 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
-      getWireframe(val) {
+      getWireframe() {
         return this.material.wireframe
       }
       setOpacity(val) {
@@ -178,7 +178,7 @@
       constructor() {
         super();
         let phi = (1 + Math.sqrt(5)) / 2;
-        let iphi = 1 / phi;
+        let iphi = phi - 1;
         this.vertices = [1, 1, 1,
           1, 1, -1,
           1, -1, 1,
@@ -271,7 +271,7 @@
       setWireframe(val) {
         this.materials.forEach(m => m.wireframe = val);
       }
-      getWireframe(val) {
+      getWireframe() {
         return this.materials[0].wireframe
       }
       setOpacity(val) {
@@ -300,20 +300,20 @@
         this.base.setWireframe(val);
         this.roof.setWireframe(val);
       }
-      getWireframe(val) {
-        return this.base.material.wireframe
+      getWireframe() {
+        return this.base.getWireframe();
       }
       setOpacity(val) {
         this.base.setOpacity(val);
         this.roof.setOpacity(val);
       }
       getOpacity() {
-        return this.base.material.opacity
+        return this.base.getOpacity();
       }
 
       setColor(color) {
-        this.base.material.color.setRGB(color.r, color.g, color.b);
-        this.roof.material.color.setRGB(color.r, color.g, color.b);
+        this.base.setColor(color);
+        this.roof.setColor(color);
       }
     }
 
@@ -342,7 +342,7 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
-      getWireframe(val) {
+      getWireframe() {
         return this.material.wireframe
       }
       setOpacity(val) {
@@ -402,7 +402,7 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
-      getWireframe(val) {
+      getWireframe() {
         return this.material.wireframe
       }
       setOpacity(val) {
@@ -445,7 +445,7 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
-      getWireframe(val) {
+      getWireframe() {
         return this.material.wireframe
       }
       setOpacity(val) {
@@ -474,20 +474,20 @@
         this.base.setWireframe(val);
         this.top.setWireframe(val);
       }
-      getWireframe(val) {
-        return this.base.material.wireframe
+      getWireframe() {
+        return this.base.getWireframe()
       }
       setOpacity(val) {
-        this.base.material.opacity = val
-        this.top.material.opacity = val
+        this.base.setOpacity(val)
+        this.top.setOpacity(val)
       }
       getOpacity() {
-        return this.base.material.opacity
+        return this.base.getOpacity()
       }
 
       setColor(color) {
-        this.base.material.color.setRGB(color.r, color.g, color.b);
-        this.cone.material.color.setRGB(color.r, color.g, color.b);
+        this.base.setColor(color);
+        this.top.setColor(color);
       }
     }
 
@@ -517,7 +517,7 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
-      getWireframe(val) {
+      getWireframe() {
         return this.material.wireframe
       }
       setOpacity(val) {
@@ -546,12 +546,11 @@
       setWireframe(val) {
         this.material.wireframe = val
       }
-      getWireframe(val) {
+      getWireframe() {
         return this.material.wireframe
       }
       setOpacity(val) {
         this.material.opacity = val
-        console.log(this.material.opacity)
       }
       getOpacity() {
         return this.material.opacity
