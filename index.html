@@ -570,7 +570,9 @@
         posX: 0,
         posY: 0,
         posZ: 0,
-        rot: 0,
+        rotX: 0,
+        rotY: 0,
+        rotZ: 0,
         translate: false,
         rotate: false,
         scale: false,
@@ -672,7 +674,9 @@
       let sliderPosX = modelMenu.add(model, "posX").min(-5).max(5).step(0.5).setValue(0).name("Initial Position X").listen();
       let sliderPosY = modelMenu.add(model, "posY").min(-5).max(5).step(0.5).setValue(0).name("Initial Position Y").listen();
       let sliderPosZ = modelMenu.add(model, "posZ").min(-5).max(5).step(0.5).setValue(0).name("Initial Position Z").listen();
-      let sliderRot = modelMenu.add(model, "rot").min(-180).max(180).step(10).setValue(0).name("Initial Rotation Y").listen();
+      let sliderRotX = modelMenu.add(model, "rotX").min(-180).max(180).step(10).setValue(0).name("Initial Rotation X").listen();
+      let sliderRotY = modelMenu.add(model, "rotY").min(-180).max(180).step(10).setValue(0).name("Initial Rotation Y").listen();
+      let sliderRotZ = modelMenu.add(model, "rotZ").min(-180).max(180).step(10).setValue(0).name("Initial Rotation Z").listen();
 
       const updateDropdown = (target, list) => {
         let innerHTMLStr = "";
@@ -688,7 +692,9 @@
         mesh.position.x = model.posX
         mesh.position.y = model.posY
         mesh.position.z = model.posZ
-        mesh.rotation.y = model.rot * Math.PI / 180
+        mesh.rotation.x = model.rotX * Math.PI / 180 // Order of rotations defined : rotx, roty, rotz.
+        mesh.rotation.y = model.rotY * Math.PI / 180
+        mesh.rotation.z = model.rotZ * Math.PI / 180
         model.names.push(mesh.name + ":" + model.names.length);
         allMeshes.push(mesh)
         updateDropdown(pickedObj, model.names)
