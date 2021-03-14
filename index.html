@@ -240,18 +240,18 @@
             2, 11, 3,
             2, 3, 17]
         ];
-        this.iColors = [[1, 0, 0], 
-          [0, 1, 0], 
-          [0, 0, 1], 
-          [0, 1, 1], 
-          [1, 1, 0], 
-          [1, 0, 1], 
-          [0.9, 0.9, 0.9], 
-          [0.5, 0.5, 0.5], 
-          [1, 0.5, 0], 
-          [0.5, 0, 1], 
-          [1, 0.5, 0.5], 
-          [0.5, 0.5, 1]];
+        this.iColors = [[1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+        [0, 1, 1],
+        [1, 1, 0],
+        [1, 0, 1],
+        [0.9, 0.9, 0.9],
+        [0.5, 0.5, 0.5],
+        [1, 0.5, 0],
+        [0.5, 0, 1],
+        [1, 0.5, 0.5],
+        [0.5, 0.5, 1]];
         this.colors = [];
         this.materials = [];
         this.geometries = [];
@@ -694,6 +694,7 @@
         mesh.rotation.x = model.rotX * Math.PI / 180 // Order of rotations defined : rotx, roty, rotz.
         mesh.rotation.y = model.rotY * Math.PI / 180
         mesh.rotation.z = model.rotZ * Math.PI / 180
+        mesh.setWireframe(model.wireframe)
         model.names.push(mesh.name + ":" + model.names.length);
         allMeshes.push(mesh)
         updateDropdown(pickedObj, model.names)
